@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wiki to Grok - Link Interception Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1 {
+            color: #1a1a2e;
+            border-bottom: 2px solid #4a90d9;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+        .test-section {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            border-left: 3px solid #4a90d9;
+        }
+        a {
+            color: #4a90d9;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        button {
+            background: #4a90d9;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        button:hover {
+            background: #357abd;
+        }
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .expected {
+            background: #d4edda;
+            border: 1px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .expected h3 {
+            margin-top: 0;
+            color: #155724;
+        }
+        .checklist {
+            list-style-type: none;
+            padding: 0;
+        }
+        .checklist li {
+            border-left: none;
+            background: none;
+            padding: 5px 0;
+        }
+        .checklist li::before {
+            content: "[ ] ";
+            font-family: monospace;
+        }
+        code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Wiki to Grok - Link Interception Test</h1>
+
+    <div class="instructions">
+        <h3>Test Instructions</h3>
+        <ol>
+            <li><strong>Load the extension:</strong> Go to <code>chrome://extensions</code>, enable Developer mode, click "Load unpacked", and select the wiki-to-grok folder.</li>
+            <li><strong>Check extension state:</strong> The toolbar icon should show "ON" badge (green/enabled).</li>
+            <li><strong>Run each test below:</strong> Click links and verify they redirect to <code>grokipedia.com/page/...</code></li>
+            <li><strong>Test toggle:</strong> Click toolbar icon to toggle "OFF", repeat tests - should go to Wikipedia.</li>
+        </ol>
+    </div>
+
+    <div class="expected">
+        <h3>Expected Behavior</h3>
+        <p>When extension is <strong>ON</strong>: All Wikipedia links redirect to <code>https://grokipedia.com/page/[Title]</code></p>
+        <p>When extension is <strong>OFF</strong>: All Wikipedia links go to <code>https://[lang].wikipedia.org/wiki/[Title]</code></p>
+    </div>
+
+    <h2>Test 1: Standard Wikipedia Links (Multiple Languages)</h2>
+    <div class="test-section">
+        <h3>Click each link - should redirect to Grokipedia</h3>
+        <ul>
+            <li>
+                <a href="https://en.wikipedia.org/wiki/Albert_Einstein">English: Albert Einstein</a>
+                <br><small>Expected: grokipedia.com/page/Albert_Einstein</small>
+            </li>
+            <li>
+                <a href="https://de.wikipedia.org/wiki/Berlin">German: Berlin</a>
+                <br><small>Expected: grokipedia.com/page/Berlin</small>
+            </li>
+            <li>
+                <a href="https://ja.wikipedia.org/wiki/%E6%9D%B1%E4%BA%AC">Japanese: Tokyo (encoded)</a>
+                <br><small>Expected: grokipedia.com/page/%E6%9D%B1%E4%BA%AC</small>
+            </li>
+            <li>
+                <a href="https://fr.wikipedia.org/wiki/Paris">French: Paris</a>
+                <br><small>Expected: grokipedia.com/page/Paris</small>
+            </li>
+            <li>
+                <a href="https://es.wikipedia.org/wiki/Madrid">Spanish: Madrid</a>
+                <br><small>Expected: grokipedia.com/page/Madrid</small>
+            </li>
+        </ul>
+    </div>
+
+    <h2>Test 2: New Tab Links (target="_blank")</h2>
+    <div class="test-section">
+        <h3>Middle-click, Ctrl+click, or use these target="_blank" links</h3>
+        <ul>
+            <li>
+                <a href="https://en.wikipedia.org/wiki/Quantum_mechanics" target="_blank">New Tab: Quantum Mechanics</a>
+                <br><small>Opens in new tab - should still redirect to Grokipedia</small>
+            </li>
+            <li>
+                <a href="https://en.wikipedia.org/wiki/Machine_learning" target="_blank">New Tab: Machine Learning</a>
+                <br><small>Opens in new tab - should still redirect to Grokipedia</small>
+            </li>
+        </ul>
+        <p><strong>Also test:</strong> Middle-click or Ctrl+click any link above to open in new tab.</p>
+    </div>
+
+    <h2>Test 3: JavaScript Navigation</h2>
+    <div class="test-section">
+        <h3>Click button to trigger window.location navigation</h3>
+        <p>
+            <button onclick="window.location='https://en.wikipedia.org/wiki/JavaScript'">
+                Navigate to JavaScript article
+            </button>
+        </p>
+        <small>Should redirect to grokipedia.com/page/JavaScript</small>
+
+        <p style="margin-top: 20px;">
+            <button onclick="window.location.href='https://en.wikipedia.org/wiki/Python_(programming_language)'">
+                Navigate to Python article (using .href)
+            </button>
+        </p>
+        <small>Should redirect to grokipedia.com/page/Python_(programming_language)</small>
+    </div>
+
+    <h2>Test 4: Toggle State Verification</h2>
+    <div class="test-section">
+        <h3>Test that toggle controls redirection</h3>
+        <ol>
+            <li>Click the extension toolbar icon to toggle <strong>OFF</strong> (badge should show "OFF")</li>
+            <li>Click this link: <a href="https://en.wikipedia.org/wiki/Toggle_switch">Toggle Switch article</a></li>
+            <li>Verify it goes to <strong>Wikipedia</strong> (not Grokipedia)</li>
+            <li>Click toolbar icon again to toggle <strong>ON</strong></li>
+            <li>Click the link again - should now go to <strong>Grokipedia</strong></li>
+        </ol>
+    </div>
+
+    <h2>Verification Checklist</h2>
+    <div class="test-section">
+        <h3>Mark each test as passed</h3>
+        <ul class="checklist">
+            <li>Standard Wikipedia link (English) redirects to Grokipedia</li>
+            <li>Non-English Wikipedia link redirects to Grokipedia</li>
+            <li>New tab link (target="_blank") redirects to Grokipedia</li>
+            <li>Middle-click/Ctrl+click opens new tab with Grokipedia</li>
+            <li>JavaScript window.location redirects to Grokipedia</li>
+            <li>Toggle OFF: links go to Wikipedia (no redirect)</li>
+            <li>Toggle ON: links redirect to Grokipedia</li>
+        </ul>
+    </div>
+
+    <h2>Additional Tests (Run Separately)</h2>
+    <div class="test-section">
+        <h3>Tests requiring external sites</h3>
+        <p><strong>Google Search Test:</strong></p>
+        <ol>
+            <li>Go to <a href="https://www.google.com" target="_blank">google.com</a></li>
+            <li>Search for "Albert Einstein Wikipedia"</li>
+            <li>Click the Wikipedia search result</li>
+            <li>Should redirect to Grokipedia</li>
+        </ol>
+
+        <p><strong>Internal Wikipedia Link Test:</strong></p>
+        <ol>
+            <li>Disable extension temporarily (toggle OFF or disable in chrome://extensions)</li>
+            <li>Navigate to any Wikipedia article</li>
+            <li>Enable extension (toggle ON)</li>
+            <li>Click an internal wiki link on the page</li>
+            <li>Should redirect to Grokipedia</li>
+        </ol>
+    </div>
+
+</body>
+</html>

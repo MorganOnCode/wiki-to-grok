@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "regexSubstitution": "https://grokipedia.com/page/\\2"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https?://([a-z]{2,3})\\.wikipedia\\.org/wiki/(.+)$",
+      "excludedRequestDomains": ["grokipedia.com"],
+      "resourceTypes": ["main_frame"]
+    }
+  }
+]
